@@ -35,8 +35,6 @@ rv_cant_agrupado = rv_cant_agrupado.reset_index()
 tabla_cant = cantones.join(rv_cant_agrupado.set_index('cod_canton'), on='cod_canton', rsuffix='_b')
 tabla_cant.rename(columns={'longitud_intersect': 'Longitud Total', 'area': 'Area', 'canton': 'Canton'}, inplace=True)
 tabla_cant["Densidad Total"] = tabla_cant["Longitud Total"] / tabla_cant["Area"];
-#categorias = ["Autopista", "Carretera Pavimento Dos Vias o Mas", "Carretera Pavimento Una Via",
-#              "Carretera Sin Pavimento Dos Vias", "Camino de Tierra"]
 categorias = redvial.categoria.unique().tolist()
 categorias.sort()
 
@@ -49,15 +47,32 @@ for cat in categorias:
 
 tabla_cant = tabla_cant.sort_values("cod_canton", ascending=[True])
 
-# Configuracion del Sidebar
+# Configuracion del Sidebar y Columnas
 
 filtro_categoria = st.sidebar.selectbox('Seleccione la Categoría de Vía', categorias)
+# Definición de columnas
+col1, col2 = st.columns(2)
 
 # 1. Tabla de Cantones
+with col1:
+    st.markdown('### 1. Tabla de Densidad Vial por Categoria de Via y Cantón.')
+    print_tabla_cant = tabla_cant[['cod_canton','Canton','Area',filtro_categoria]]
+    print_tabla_cant = pd.DataFrame(print_tabla_cant)
+    print_tabla_cant["Densidad"] = print_tabla_cant[filtro_categoria] / print_tabla_cant['Area']
+    st.dataframe(print_tabla_cant[['Canton',filtro_categoria,'Densidad']]
+                 .rename(columns={'Canton': 'Cantón', filtro_categoria: filtro_categoria.title()}), height=600)
 
-st.markdown('Tabla de Densidad Vial por Categoria de Via y Cantón.')
-print_tabla_cant = tabla_cant[['cod_canton','Canton','Area',filtro_categoria]]
-print_tabla_cant = pd.DataFrame(print_tabla_cant)
-print_tabla_cant["Densidad"] = print_tabla_cant[filtro_categoria] / print_tabla_cant['Area']
-print_tabla_cant = print_tabla_cant.rename(columns={filtro_categoria: filtro_categoria.title()})
-print_tabla_cant
+# 2. Gráfico de Barras
+# Dataframe filtrado con los top 15 cantones como mayor red vial, para usar en graficación
+with col2:
+    st.markdown('### 2. Gráfico de Barras Apiladas por Tipo de Via.')
+    print_grafico_barras = print_tabla_cant.sort_values(filtro_categoria, ascending=[False]).head(15)
+    fig = px.bar(print_grafico_barras,
+                 x='Canton',
+                 y=filtro_categoria,
+                 title="Top 15 cantones con mayor longitud de red vial de tipo : {}.".format(filtro_categoria.title()),
+                 height=600,
+                 labels={
+                     filtro_categoria: "Longitud (Km)"
+                 })
+    st.plotly_chart(fig)
