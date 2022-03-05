@@ -59,10 +59,5 @@ st.markdown('Tabla de Densidad Vial por Categoria de Via y Cantón.')
 print_tabla_cant = tabla_cant[['cod_canton','Canton','Area',filtro_categoria]]
 print_tabla_cant = pd.DataFrame(print_tabla_cant)
 print_tabla_cant["Densidad"] = print_tabla_cant[filtro_categoria] / print_tabla_cant['Area']
-#print_tabla_cant = print_tabla_cant.rename(columns={'AUTOPISTA': 'Autopistas (Km)',
-#                                              'CANTON': 'Cantón',
-#                                              'CARRETERA PAVIMENTO DOS VIAS O MAS': 'Carreteras Pavimento Dos Vias o Más (Km)',
-#                                              'CARRETERA PAVIMENTO UNA VIA': 'Carreteras Pavimento Una Via (Km)',
-#                                              'CARRETERA SIN PAVIMENTO DOS VIAS': 'Carreteras Sin Pavimento Dos Vias (Km)',
-#                                              'CAMINO DE TIERRA': 'Caminos de Tierra (Km)'})
+print_tabla_cant = print_tabla_cant.rename(columns={filtro_categoria: filtro_categoria.title()})
 print_tabla_cant
