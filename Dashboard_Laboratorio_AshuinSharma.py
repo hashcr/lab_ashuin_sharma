@@ -45,7 +45,7 @@ for cat in categorias:
     tabla_cant.rename(columns={'longitud_intersect': cat}, inplace=True)
     tabla_cant[cat] = tabla_cant[cat].fillna(0)
 
-tabla_cant = tabla_cant.sort_values("cod_canton", ascending=[True])
+tabla_cant = tabla_cant.sort_values("cod_canton", ascending=[True]).reset_index()
 
 # 1. Configuracion del Sidebar y Columnas
 
@@ -91,4 +91,4 @@ with col1:
                     .format(filtro_categoria.title()))
     st.plotly_chart(fig)
 
-# ## 4. Mapa de coropletas Densidad Vial de Costa Rica.
+# 5. Mapa de coropletas Densidad Vial de Costa Rica.
