@@ -9,6 +9,7 @@ import numpy as np
 import geopandas as gpd
 import folium
 import plotly.express as px
+from streamlit_folium import folium_static
 
 # Configugraciones y Leyendas de la Aplicacion
 st.set_page_config(layout='wide')
@@ -55,7 +56,7 @@ col1, col2 = st.columns(2)
 
 # 2. Tabla de Cantones
 with col1:
-    st.markdown('### 1. Tabla de Densidad Vial por Categoria de Via y Cantón.')
+    st.header('1. Tabla de Densidad Vial por Categoria de Via y Cantón.')
     print_tabla_cant = tabla_cant[['cod_canton','Canton','Area',filtro_categoria]]
     print_tabla_cant = pd.DataFrame(print_tabla_cant)
     print_tabla_cant["Densidad"] = print_tabla_cant[filtro_categoria] / print_tabla_cant['Area']
@@ -65,7 +66,7 @@ with col1:
 # 3. Gráfico de Barras
 # Dataframe filtrado con los top 15 cantones como mayor red vial, para usar en graficación
 with col2:
-    st.markdown('### 2. Gráfico de Barras Apiladas por Tipo de Via.')
+    st.header('2. Gráfico de Barras Apiladas por Tipo de Via.')
     print_grafico_barras = print_tabla_cant.sort_values(filtro_categoria, ascending=[False]).head(15)
     fig = px.bar(print_grafico_barras,
                  x='Canton',
@@ -81,7 +82,7 @@ with col2:
 # Pie Chart con la propocion de los 15 principales cantones con Densidad Vial por Determinado Tipo de Via.
 
 with col1:
-    st.markdown('### 3. Gráfico de Pastel Longitud Total por Tipo de Via y Cantón.')
+    st.header('3. Gráfico de Pastel Longitud Total por Tipo de Via y Cantón.')
     print_grafico_pie = print_tabla_cant.sort_values(filtro_categoria, ascending=[False])
     print_grafico_pie.loc[print_grafico_pie[filtro_categoria] < print_grafico_pie.iloc[14][filtro_categoria],
                           'Canton']= 'Otros'
@@ -92,3 +93,31 @@ with col1:
     st.plotly_chart(fig)
 
 # 5. Mapa de coropletas Densidad Vial de Costa Rica.
+# Creación del mapa base
+with col2:
+    st.header('4. Mapa de coropletas Densidad Vial de Costa Rica por Tipo de Via y Cantón.')
+    m = folium.Map(location=[9.8, -84],
+                   tiles='CartoDB positron',
+                   control_scale=True,
+                   zoom_start=7)
+
+    # Creación del mapa de coropletas
+    folium.Choropleth(
+        name="Densidad Vial",
+        geo_data=cantones,
+        data=print_tabla_cant,
+        columns=['cod_canton', 'Densidad'],
+        bins=7,
+        key_on='feature.properties.cod_canton',
+        fill_color='Reds',
+        fill_opacity=0.8,
+        line_opacity=1,
+        legend_name='Densidad vial por categoria de via y cantón',
+        smooth_factor=0).add_to(m)
+
+# Añadir capa de Red Vial
+folium.GeoJson(data=redvial[redvial['categoria'] == filtro_categoria], name='Red vial').add_to(m)
+
+# Control de capas
+folium.LayerControl().add_to(m)
+folium_static(m)
