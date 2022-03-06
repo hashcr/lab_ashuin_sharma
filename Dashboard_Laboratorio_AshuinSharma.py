@@ -81,39 +81,38 @@ with col2:
 # 4. Gráfico de Pastel
 # Pie Chart con la propocion de los 15 principales cantones con Densidad Vial por Determinado Tipo de Via.
 
-with col1:
-    st.header('3. Gráfico de Pastel Longitud Total por Tipo de Via y Cantón.')
-    print_grafico_pie = print_tabla_cant.sort_values(filtro_categoria, ascending=[False])
-    print_grafico_pie.loc[print_grafico_pie[filtro_categoria] < print_grafico_pie.iloc[14][filtro_categoria],
-                          'Canton']= 'Otros'
-    # Creación del Pie Chart
-    fig = px.pie(print_grafico_pie, values=filtro_categoria, names='Canton', height=600,
-                 title='Gráfico de Pastel. Distribución Total de Red Vial por Cantones y Tipo Via: {}'
-                    .format(filtro_categoria.title()))
-    st.plotly_chart(fig)
+st.header('3. Gráfico de Pastel Longitud Total por Tipo de Via y Cantón.')
+print_grafico_pie = print_tabla_cant.sort_values(filtro_categoria, ascending=[False])
+print_grafico_pie.loc[print_grafico_pie[filtro_categoria] < print_grafico_pie.iloc[14][filtro_categoria],
+                      'Canton']= 'Otros'
+# Creación del Pie Chart
+fig = px.pie(print_grafico_pie, values=filtro_categoria, names='Canton', height=600,
+             title='Gráfico de Pastel. Distribución Total de Red Vial por Cantones y Tipo Via: {}'
+                .format(filtro_categoria.title()))
+st.plotly_chart(fig)
 
 # 5. Mapa de coropletas Densidad Vial de Costa Rica.
 # Creación del mapa base
-with col2:
-    st.header('4. Mapa de coropletas Densidad Vial de Costa Rica por Tipo de Via y Cantón.')
-    m = folium.Map(location=[9.8, -84],
-                   tiles='CartoDB positron',
-                   control_scale=True,
-                   zoom_start=7)
 
-    # Creación del mapa de coropletas
-    folium.Choropleth(
-        name="Densidad Vial",
-        geo_data=cantones,
-        data=print_tabla_cant,
-        columns=['cod_canton', 'Densidad'],
-        bins=7,
-        key_on='feature.properties.cod_canton',
-        fill_color='Reds',
-        fill_opacity=0.8,
-        line_opacity=1,
-        legend_name='Densidad vial por categoria de via y cantón',
-        smooth_factor=0).add_to(m)
+st.header('4. Mapa de coropletas Densidad Vial de Costa Rica por Tipo de Via y Cantón.')
+m = folium.Map(location=[9.8, -84],
+               tiles='CartoDB positron',
+               control_scale=True,
+               zoom_start=7)
+
+# Creación del mapa de coropletas
+folium.Choropleth(
+    name="Densidad Vial",
+    geo_data=cantones,
+    data=print_tabla_cant,
+    columns=['cod_canton', 'Densidad'],
+    bins=7,
+    key_on='feature.properties.cod_canton',
+    fill_color='Reds',
+    fill_opacity=0.8,
+    line_opacity=1,
+    legend_name='Densidad vial por categoria de via y cantón',
+    smooth_factor=0).add_to(m)
 
 # Añadir capa de Red Vial
 folium.GeoJson(data=redvial[redvial['categoria'] == filtro_categoria], name='Red vial').add_to(m)
