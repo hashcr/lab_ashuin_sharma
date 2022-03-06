@@ -19,6 +19,7 @@ st.markdown('Esta aplicación presenta visualizaciones tabulares, gráficas y ge
 st.markdown('El usuario debe seleccionar en la barra lateral una de las 5 distintas categorias de Via y la aplicación le mostrará los datos correspondientes.')
 st.markdown('1- Tabla de datos por cantones 2- Gráfico de Barras  3- Gráfico de Pastel  4- Mapa de Coropletas.')
 st.markdown('Código Fuente: https://github.com/hashcr/lab_ashuin_sharma/Dashboard_Laboratorio_AshuinSharma.py')
+st.markdown('Autor: Ashuin Sharma Chamorro (A35029)')
 
 # 0. Preparación de datos y cálculos.
 cantones = gpd.read_file("cantones.geojson")
