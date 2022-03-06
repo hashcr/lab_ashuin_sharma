@@ -111,7 +111,7 @@ folium.Choropleth(
     fill_color='Reds',
     fill_opacity=0.8,
     line_opacity=1,
-    legend_name='Densidad vial por categoria de via y cantón',
+    legend_name='Densidad vial por Cantón y Via Categoria tipo {}'.format(filtro_categoria.title()),
     smooth_factor=0).add_to(m)
 
 # Añadir capa de Red Vial
