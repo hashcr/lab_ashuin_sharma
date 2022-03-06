@@ -82,9 +82,10 @@ with col2:
 # Pie Chart con la propocion de los 15 principales cantones con Densidad Vial por Determinado Tipo de Via.
 
 st.header('3. Gráfico de Pastel Longitud Total por Tipo de Via y Cantón.')
-print_grafico_pie = print_tabla_cant.sort_values(filtro_categoria, ascending=[False])
-print_grafico_pie.loc[print_grafico_pie[filtro_categoria] < print_grafico_pie.iloc[14][filtro_categoria],
-                      'Canton']= 'Otros'
+print_grafico_pie = print_tabla_cant.sort_values(filtro_categoria, ascending=[False]).reset_index()
+# Cambiar el nombre del canton para los cantones en el puesto 15 hasta el 82
+print_grafico_pie.loc[14:print_grafico_pie['cod_canton'].unique().size - 1, 'Canton']= 'Otros'
+
 # Creación del Pie Chart
 fig = px.pie(print_grafico_pie, values=filtro_categoria, names='Canton', height=600,
              title='Gráfico de Pastel. Distribución Total de Red Vial por Cantones y Tipo Via: {}'
