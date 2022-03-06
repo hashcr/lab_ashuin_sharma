@@ -61,7 +61,8 @@ with col1:
     print_tabla_cant = pd.DataFrame(print_tabla_cant)
     print_tabla_cant["Densidad"] = print_tabla_cant[filtro_categoria] / print_tabla_cant['Area']
     st.dataframe(print_tabla_cant[['Canton',filtro_categoria,'Densidad']]
-                 .rename(columns={'Canton': 'Cantón', filtro_categoria: filtro_categoria.title()}), height=600)
+                 .rename(columns={'Densidad': 'Densidad (Km/Km2)', 'Canton': 'Cantón',
+                                  filtro_categoria: "Longitud {} (Km)".format(filtro_categoria.title())}), height=600)
 
 # 3. Gráfico de Barras
 # Dataframe filtrado con los top 15 cantones como mayor red vial, para usar en graficación
