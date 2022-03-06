@@ -88,7 +88,7 @@ st.header('3. Gráfico de Pastel.')
 st.header('   Distribución por Cantón de Longitud Total por Tipo de Vía.')
 print_grafico_pie = print_tabla_cant.sort_values(filtro_categoria, ascending=[False]).reset_index()
 # Cambiar el nombre del canton para los cantones en el puesto 15 hasta el 82
-print_grafico_pie.loc[14:print_grafico_pie['cod_canton'].unique().size - 1, 'Canton']= 'Otros'
+print_grafico_pie.loc[15:print_grafico_pie['cod_canton'].unique().size - 1, 'Canton']= 'Otros'
 
 # Creación del Pie Chart
 fig = px.pie(print_grafico_pie, values=filtro_categoria, names='Canton', height=600,
