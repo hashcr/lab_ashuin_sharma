@@ -47,13 +47,13 @@ for cat in categorias:
 
 tabla_cant = tabla_cant.sort_values("cod_canton", ascending=[True])
 
-# Configuracion del Sidebar y Columnas
+# 1. Configuracion del Sidebar y Columnas
 
 filtro_categoria = st.sidebar.selectbox('Seleccione la Categoría de Vía', categorias)
 # Definición de columnas
 col1, col2 = st.columns(2)
 
-# 1. Tabla de Cantones
+# 2. Tabla de Cantones
 with col1:
     st.markdown('### 1. Tabla de Densidad Vial por Categoria de Via y Cantón.')
     print_tabla_cant = tabla_cant[['cod_canton','Canton','Area',filtro_categoria]]
@@ -62,7 +62,7 @@ with col1:
     st.dataframe(print_tabla_cant[['Canton',filtro_categoria,'Densidad']]
                  .rename(columns={'Canton': 'Cantón', filtro_categoria: filtro_categoria.title()}), height=600)
 
-# 2. Gráfico de Barras
+# 3. Gráfico de Barras
 # Dataframe filtrado con los top 15 cantones como mayor red vial, para usar en graficación
 with col2:
     st.markdown('### 2. Gráfico de Barras Apiladas por Tipo de Via.')
@@ -76,3 +76,19 @@ with col2:
                      filtro_categoria: "Longitud (Km)"
                  })
     st.plotly_chart(fig)
+
+# 4. Gráfico de Pastel
+# Pie Chart con la propocion de los 15 principales cantones con Densidad Vial por Determinado Tipo de Via.
+
+with col1:
+    st.markdown('### 3. Gráfico de Pastel Longitud Total por Tipo de Via y Cantón.')
+    print_grafico_pie = print_tabla_cant.sort_values(filtro_categoria, ascending=[False])
+    print_grafico_pie.loc[print_grafico_pie[filtro_categoria] < print_grafico_pie.iloc[14][filtro_categoria],
+                          'Canton']= 'Otros'
+    # Creación del Pie Chart
+    fig = px.pie(print_grafico_pie, values=filtro_categoria, names='Canton', height=600,
+                 title='Gráfico de Pastel. Distribución Total de Red Vial por Cantones y Tipo Via: {}'
+                    .format(filtro_categoria.title()))
+    st.plotly_chart(fig)
+
+# ## 4. Mapa de coropletas Densidad Vial de Costa Rica.
