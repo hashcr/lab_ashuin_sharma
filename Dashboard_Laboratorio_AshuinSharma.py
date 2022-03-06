@@ -56,7 +56,7 @@ col1, col2 = st.columns(2)
 
 # 2. Tabla de Cantones
 with col1:
-    st.header('1. Tabla de Densidad Vial por Categoria de Via y Cantón.')
+    st.header('1. Tabla de Densidad Vial por Categoría de Vía y Cantón.')
     print_tabla_cant = tabla_cant[['cod_canton','Canton','Area',filtro_categoria]]
     print_tabla_cant = pd.DataFrame(print_tabla_cant)
     print_tabla_cant["Densidad"] = print_tabla_cant[filtro_categoria] / print_tabla_cant['Area']
@@ -66,7 +66,7 @@ with col1:
 # 3. Gráfico de Barras
 # Dataframe filtrado con los top 15 cantones como mayor red vial, para usar en graficación
 with col2:
-    st.header('2. Gráfico de Barras Apiladas por Tipo de Via.')
+    st.header('2. Gráfico de Barras Top 15 Cantones por Tipo de Vía.')
     print_grafico_barras = print_tabla_cant.sort_values(filtro_categoria, ascending=[False]).head(15)
     fig = px.bar(print_grafico_barras,
                  x='Canton',
@@ -74,14 +74,16 @@ with col2:
                  title="Top 15 cantones con mayor longitud de red vial de tipo : {}.".format(filtro_categoria.title()),
                  height=600,
                  labels={
-                     filtro_categoria: "Longitud (Km)"
+                     filtro_categoria: "Longitud (Km)",
+                     "Canton": "Cantón"
                  })
     st.plotly_chart(fig)
 
 # 4. Gráfico de Pastel
 # Pie Chart con la propocion de los 15 principales cantones con Densidad Vial por Determinado Tipo de Via.
 
-st.header('3. Gráfico de Pastel Longitud Total por Tipo de Via y Cantón.')
+st.header('3. Gráfico de Pastel.')
+st.header('   Distribución por Cantón de Longitud Total por Tipo de Vía.')
 print_grafico_pie = print_tabla_cant.sort_values(filtro_categoria, ascending=[False]).reset_index()
 # Cambiar el nombre del canton para los cantones en el puesto 15 hasta el 82
 print_grafico_pie.loc[14:print_grafico_pie['cod_canton'].unique().size - 1, 'Canton']= 'Otros'
@@ -95,7 +97,7 @@ st.plotly_chart(fig)
 # 5. Mapa de coropletas Densidad Vial de Costa Rica.
 # Creación del mapa base
 
-st.header('4. Mapa de coropletas Densidad Vial de Costa Rica por Tipo de Via y Cantón.')
+st.header('4. Mapa de Coropletas Densidad Vial de Costa Rica por Tipo de Via y Cantón.')
 m = folium.Map(location=[9.8, -84],
                tiles='CartoDB positron',
                control_scale=True,
